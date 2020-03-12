@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>番号練習</title>
+	<link rel="stylesheet" href="numberMake.css" type="text/css">
+</head>
+<body align= "center">
+<p align= "right"><a href= ./numberMake100.html>en</a></p>
+  <h3>言語を選択<h3>
+
+    <select id='voiceList' align= "center"></select> <br><br>
+	
+  <h3>ここに何かを入力して押して読んでください<h3>
+ 
+	<textarea id='txtInput' align= "center" rows="6" cols="20"> </textarea> <br><br>
+    <button id='btnSpeak' align= "center">話す!</button>
+ 
+	<br>
+	
+  <h3>番号を作る<h3>
+    <p> (0 - 10,000) </p>
+ 
+	<button id="b" onclick="random()"> 番号 </button>
+	<p id ="number"> </p>
+	<a href= ./日本語numberMake100.html>0-100</a><p> * </p><a href= ./日本語numberMake1,000.html>0-1,000</a>
+
+    <script>
+	
+	function random() {
+document.getElementById("number").innerHTML = Math.floor(Math.random() * 10000)
+}
+
+	
+        var txtInput = document.querySelector('#txtInput');
+        var voiceList = document.querySelector('#voiceList');
+        var btnSpeak = document.querySelector('#btnSpeak');
+        var synth = window.speechSynthesis;
+        var voices = [];
+
+        PopulateVoices();
+        if(speechSynthesis !== undefined){
+            speechSynthesis.onvoiceschanged = PopulateVoices;
+        }
+
+        btnSpeak.addEventListener('click', ()=> {
+            var toSpeak = new SpeechSynthesisUtterance(txtInput.value);
+            var selectedVoiceName = voiceList.selectedOptions[0].getAttribute('data-name');
+            voices.forEach((voice)=>{
+                if(voice.name === selectedVoiceName){
+                    toSpeak.voice = voice;
+                }
+            });
+            synth.speak(toSpeak);
+        });
+
+        function PopulateVoices(){
+            voices = synth.getVoices();
+            var selectedIndex = voiceList.selectedIndex < 0 ? 0 : voiceList.selectedIndex;
+            voiceList.innerHTML = '';
+            voices.forEach((voice)=>{
+                var listItem = document.createElement('option');
+                listItem.textContent = voice.name;
+                listItem.setAttribute('data-lang', voice.lang);
+                listItem.setAttribute('data-name', voice.name);
+                voiceList.appendChild(listItem);
+            });
+
+            voiceList.selectedIndex = selectedIndex;
+        }
+    </script>
+	<style>
+	
+	#number {
+	
+	font-size: 70px
+	
+	}
+	</style>
+	
+</body>
+</html>
